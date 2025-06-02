@@ -17,21 +17,32 @@ class InstitutionInfo(BaseModel):
 
 # Custom output parser
 def parse_response(text: str) -> InstitutionInfo:
-    data = {k.lower(): "N/A" for k in ["founder", "founded", "branches", "employees", "summary"]}
-    for line in text.strip().split("\n"):
-        if ":" in line:
-            key, value = line.split(":", 1)
-            key = key.strip().lower()
-            if key in data:
-                data[key] = value.strip()
-    return InstitutionInfo(
-        founder=data["founder"],
-        founded_year=data["founded"],
-        branches=data["branches"],
-        employees=data["employees"],
-        summary=data["summary"]
-    )
+    founder = "N/A"
+    founded_year = "N/A"
+    branches = "N/A"
+    employees = "N/A"
+    summary = "N/A"
+    lines = text.strip().split("\n")
 
+    for line in lines:
+        if line.lower().startswith("founder:"):
+            founder = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("founded:"):
+            founded_year = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("branches:"):
+            branches = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("employees:"):
+            employees = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("summary:"):
+            summary = line.split(":", 1)[1].strip()
+
+    return InstitutionInfo(
+        founder=founder,
+        founded_year=founded_year,
+        branches=branches,
+        employees=employees,
+        summary=summary
+    )
 # Setup
 os.environ["COHERE_API_KEY"] = "YrqBdTypjvdKMc7bBljLwihs5TS54JCN8qjrLVQ5"
 llm = ChatCohere(model_name="command-xlarge-nightly")
