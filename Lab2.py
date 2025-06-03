@@ -1,3 +1,7 @@
+!pip uninstall -y gensim numpy scipy
+!pip install numpy==1.25.0
+!pip install gensim
+
 import gensim.downloader as api
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
